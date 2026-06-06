@@ -1,0 +1,33 @@
+# Node & frontend
+node_modules/
+/dist/
+/.env
+/.pnp
+.pnp.js
+
+# Python backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Build artifacts
+build/
+
+# Electron
+/electron/output/

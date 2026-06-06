@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Local MongoDB Development Database
+  mongo:
+    image: mongo:6.0
+    container_name: cyberguard-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - cyberguard-network
+    restart: unless-stopped
+
+  # FastAPI Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cyberguard-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017/
+      - DATABASE_NAME=cyberguard
+      - SIMULATOR_ACTIVE=true
+      - PORT=8000
+    depends_on:
+      - mongo
+    networks:
+      - cyberguard-network
+    restart: unless-stopped
+
+  # React Frontend Dashboard Served via Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cyberguard-frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - cyberguard-network
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+
+networks:
+  cyberguard-network:
+    driver: bridge
