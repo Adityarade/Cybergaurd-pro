@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 class UserSignup(BaseModel):
     username: str = Field(..., min_length=3, max_length=50, example="security_analyst")
     password: str = Field(..., min_length=4, example="supersecurepassword")
-    role: str = Field(default="Viewer", pattern="^(Viewer|Admin)$", example="Viewer")
+    role: str = Field(default="Admin", pattern="^(Viewer|Admin)$", example="Admin")
 
 class UserLogin(BaseModel):
     username: str = Field(..., example="admin")
