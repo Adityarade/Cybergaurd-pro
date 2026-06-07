@@ -18,8 +18,8 @@ export default function Header({
         
         {/* Left Side: Logo & Name */}
         <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-cyber-accent/15 border border-cyber-accent/35 rounded-lg shadow-neon-purple animate-pulse">
-              <img src="/logo.png" alt="CyberGuard" className="w-7 h-7 object-contain" />
+            <div className="w-12 h-12 bg-cyber-accent/15 border border-cyber-accent/35 rounded-lg shadow-neon-purple animate-pulse overflow-hidden flex items-center justify-center">
+              <img src="/logo.png" alt="CyberGuard" className="w-full h-full object-cover" />
             </div>
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyber-accent via-cyber-cyan to-white">
