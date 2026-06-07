@@ -17,11 +17,11 @@ export default function Header({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Left Side: Logo & Name */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <img 
             src="/logo.png" 
             alt="CyberGuard" 
-            className="w-16 h-16 object-contain animate-pulse drop-shadow-[0_0_12px_rgba(139,92,246,0.6)]" 
+            className="w-10 h-10 object-contain" 
           />
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyber-accent via-cyber-cyan to-white">
