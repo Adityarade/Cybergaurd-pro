@@ -43,7 +43,7 @@ export default function Login() {
           <img 
             src="/logo.png" 
             alt="CyberGuard" 
-            className="w-20 h-20 object-contain mb-4" 
+            className="w-32 h-32 object-contain mb-4" 
           />
           <h1 className="text-2xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500">
             CYBERGUARD PRO
