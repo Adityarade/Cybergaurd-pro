@@ -85,7 +85,7 @@ React | Vite | Tailwind CSS | Electron | Lucide
 ---
 You can run CyberGuard Pro easily:
 
-### Option A: The One-Click Script (Easiest) 🚀
+### Option A: Web Browser Mode (Quick Start) 🚀
 Simply run the included batch script for Windows. No manual configuration required.
 
 1. Clone or download the repository.
@@ -94,7 +94,16 @@ Simply run the included batch script for Windows. No manual configuration requir
 
 ---
 
-### Option B: Run from Source (For Developers) 🐍
+### Option B: Native Desktop App Mode 🖥️
+Want to experience CyberGuard Pro as a native standalone application?
+
+1. Clone or download the repository.
+2. Double-click `start_desktop.bat`.
+3. The system will bundle the backend and launch the custom Electron Desktop interface directly on your computer!
+
+---
+
+### Option C: Run from Source (For Developers) 🐍
 If you want to modify the code or run it on Mac/Linux:
 
 1. Clone the repository:
