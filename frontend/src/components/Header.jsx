@@ -21,7 +21,7 @@ export default function Header({
           <img 
             src="/logo.png" 
             alt="CyberGuard" 
-            className="w-16 h-16 object-contain" 
+            className="w-24 h-24 object-contain" 
           />
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyber-accent via-cyber-cyan to-white">
