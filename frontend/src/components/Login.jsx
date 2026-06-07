@@ -41,7 +41,7 @@ export default function Login() {
         {/* Title / Logo Header */}
         <div className="text-center mb-8">
           <div className="inline-flex p-3 rounded-xl bg-slate-900 border border-slate-800 shadow-[0_0_15px_rgba(6,182,212,0.1)] mb-4 animate-pulse">
-            <Shield className="w-10 h-10 text-cyan-400" />
+            <img src="/logo.png" alt="CyberGuard" className="w-10 h-10 object-contain" />
           </div>
           <h1 className="text-2xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500">
             CYBERGUARD PRO
