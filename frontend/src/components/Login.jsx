@@ -39,10 +39,12 @@ export default function Login() {
         <div className="absolute -bottom-px -right-px w-8 h-8 border-b-2 border-r-2 border-fuchsia-500 rounded-br-xl pointer-events-none"></div>
 
         {/* Title / Logo Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex w-20 h-20 rounded-xl bg-slate-900 border border-slate-800 shadow-[0_0_15px_rgba(6,182,212,0.1)] mb-4 animate-pulse overflow-hidden items-center justify-center">
-            <img src="/logo.png" alt="CyberGuard" className="w-full h-full object-cover" />
-          </div>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <img 
+            src="/logo.png" 
+            alt="CyberGuard" 
+            className="w-24 h-24 object-contain mb-4 animate-pulse drop-shadow-[0_0_15px_rgba(6,182,212,0.6)]" 
+          />
           <h1 className="text-2xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500">
             CYBERGUARD PRO
           </h1>
