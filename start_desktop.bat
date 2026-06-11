@@ -5,6 +5,11 @@ echo ===================================================
 echo     CYBERGUARD PRO - Native Desktop Launcher   
 echo ===================================================
 echo.
+echo Cleaning cache to prevent JSON errors...
+cd frontend
+if exist package-lock.json del package-lock.json
+cd ..
+
 echo Starting Backend Engine...
 start "CyberGuard Backend" cmd /c "cd backend && pip install -r requirements.txt && uvicorn app.main:app --host 127.0.0.1 --port 8000"
 
