@@ -6,7 +6,8 @@ export default defineConfig({
   // Use relative base so Electron can load files with file:// protocol
   base: './',
   server: {
-    port: 5173,
+    port: 5180,
+    strictPort: true,
     host: true,
     proxy: {
       '/api': {

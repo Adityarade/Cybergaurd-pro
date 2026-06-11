@@ -5,7 +5,7 @@ const http = require('http')
 
 // ── Configuration ──────────────────────────────────────────────────────────────
 const BACKEND_PORT = 8000
-const FRONTEND_PORT = 5173
+const FRONTEND_PORT = 5180
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
 
 // Python paths to try (in order of preference)
