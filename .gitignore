@@ -4,6 +4,8 @@ node_modules/
 /.env
 /.pnp
 .pnp.js
+frontend/dist/
+frontend/dist-electron/
 
 # Python backend
 __pycache__/
