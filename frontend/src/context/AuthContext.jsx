@@ -4,7 +4,8 @@ const AuthContext = createContext(null);
 
 // In Electron, point to the direct backend, otherwise use dynamic config or Vite proxy
 const isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
-const API_BASE = isElectron ? 'http://127.0.0.1:8000' : (import.meta.env.VITE_API_URL || '');
+const rawApiUrl = isElectron ? 'http://127.0.0.1:8000' : (import.meta.env.VITE_API_URL || '');
+const API_BASE = rawApiUrl.replace(/\/$/, "");
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);

@@ -11,8 +11,8 @@ import NotificationSystem from './components/NotificationSystem';
 
 // In Electron the window.electronAPI bridge is injected by preload.js
 // In browser dev mode we rely on the Vite proxy configured in vite.config.js
-const isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
-const API_BASE = isElectron ? 'http://127.0.0.1:8000' : (import.meta.env.VITE_API_URL || "");
+const rawApiUrl = isElectron ? 'http://127.0.0.1:8000' : (import.meta.env.VITE_API_URL || "");
+const API_BASE = rawApiUrl.replace(/\/$/, "");
 
 function DashboardContent() {
   const { user, token, logout, isAdmin } = useAuth();
@@ -97,70 +97,87 @@ function DashboardContent() {
     }
     const wsUrl = `${wsProtocol}//${wsHost}/api/v1/threats/ws`;
 
-    console.log(`Connecting to WebSocket stream at: ${wsUrl}`);
-    const socket = new WebSocket(wsUrl);
+    let socket = null;
+    let reconnectTimeout = null;
+    let isComponentMounted = true;
 
-    socket.onopen = () => {
-      console.log("Telemetry WebSocket channel established.");
+    const connectWebSocket = () => {
+      console.log(`Connecting to WebSocket stream at: ${wsUrl}`);
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        console.log("Telemetry WebSocket channel established.");
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const newLog = JSON.parse(event.data);
+          console.log("Real-time telemetry event received:", newLog);
+
+          // Prepend new logs instantly to feed and cap at 200 logs to prevent rendering lag
+          setLogs((prevLogs) => {
+            // Check if log already exists to avoid duplicates
+            if (prevLogs.some((l) => l._id === newLog._id)) return prevLogs;
+            
+            // Apply filter if one is active
+            if (filter && newLog.classification !== filter) return prevLogs;
+            
+            return [newLog, ...prevLogs].slice(0, 200);
+          });
+
+          // Increment stats counters dynamically in real-time
+          setStats((prevStats) => {
+            const isThreat = newLog.classification !== "Normal";
+            const updatedThreatCounts = { ...prevStats.threat_counts };
+            
+            if (isThreat && newLog.classification in updatedThreatCounts) {
+              updatedThreatCounts[newLog.classification] += 1;
+            }
+
+            const newTotal = prevStats.total_logs + 1;
+            const newClean = prevStats.clean_logs + (isThreat ? 0 : 1);
+            const newThreats = prevStats.total_threats + (isThreat ? 1 : 0);
+
+            // Update accuracy with simple running average representation
+            const confidence = newLog.confidence || 0.95;
+            const newAccuracy = ((prevStats.prediction_accuracy * prevStats.total_logs) + (confidence * 100)) / newTotal;
+
+            return {
+              ...prevStats,
+              total_logs: newTotal,
+              clean_logs: newClean,
+              total_threats: newThreats,
+              prediction_accuracy: parseFloat(newAccuracy.toFixed(2)),
+              threat_counts: updatedThreatCounts
+            };
+          });
+        } catch (err) {
+          console.error("Failed to parse WebSocket packet payload:", err);
+        }
+      };
+
+      socket.onerror = (err) => {
+        console.error("WebSocket connection failure:", err);
+      };
+
+      socket.onclose = (e) => {
+        console.log("WebSocket telemetry channel closed. Reconnecting in 3s...", e.reason);
+        if (isComponentMounted) {
+          reconnectTimeout = setTimeout(connectWebSocket, 3000);
+        }
+      };
     };
 
-    socket.onmessage = (event) => {
-      try {
-        const newLog = JSON.parse(event.data);
-        console.log("Real-time telemetry event received:", newLog);
-
-        // Prepend new logs instantly to feed and cap at 200 logs to prevent rendering lag
-        setLogs((prevLogs) => {
-          // Check if log already exists to avoid duplicates
-          if (prevLogs.some((l) => l._id === newLog._id)) return prevLogs;
-          
-          // Apply filter if one is active
-          if (filter && newLog.classification !== filter) return prevLogs;
-          
-          return [newLog, ...prevLogs].slice(0, 200);
-        });
-
-        // Increment stats counters dynamically in real-time
-        setStats((prevStats) => {
-          const isThreat = newLog.classification !== "Normal";
-          const updatedThreatCounts = { ...prevStats.threat_counts };
-          
-          if (isThreat && newLog.classification in updatedThreatCounts) {
-            updatedThreatCounts[newLog.classification] += 1;
-          }
-
-          const newTotal = prevStats.total_logs + 1;
-          const newClean = prevStats.clean_logs + (isThreat ? 0 : 1);
-          const newThreats = prevStats.total_threats + (isThreat ? 1 : 0);
-
-          // Update accuracy with simple running average representation
-          const confidence = newLog.confidence || 0.95;
-          const newAccuracy = ((prevStats.prediction_accuracy * prevStats.total_logs) + (confidence * 100)) / newTotal;
-
-          return {
-            ...prevStats,
-            total_logs: newTotal,
-            clean_logs: newClean,
-            total_threats: newThreats,
-            prediction_accuracy: parseFloat(newAccuracy.toFixed(2)),
-            threat_counts: updatedThreatCounts
-          };
-        });
-      } catch (err) {
-        console.error("Failed to parse WebSocket packet payload:", err);
-      }
-    };
-
-    socket.onerror = (err) => {
-      console.error("WebSocket connection failure:", err);
-    };
-
-    socket.onclose = () => {
-      console.log("WebSocket telemetry channel closed.");
-    };
+    connectWebSocket();
 
     return () => {
-      socket.close();
+      isComponentMounted = false;
+      if (socket) {
+        socket.close();
+      }
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
     };
   }, [filter, token]);
 
