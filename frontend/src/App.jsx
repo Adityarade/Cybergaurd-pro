@@ -9,8 +9,7 @@ import { useAuth } from './context/AuthContext';
 import { AlertOctagon, Terminal } from 'lucide-react';
 import NotificationSystem from './components/NotificationSystem';
 
-// In Electron the window.electronAPI bridge is injected by preload.js
-// In browser dev mode we rely on the Vite proxy configured in vite.config.js
+const isElectron = typeof window !== 'undefined' && window.electronAPI?.isElectron;
 const rawApiUrl = isElectron ? 'http://127.0.0.1:8000' : (import.meta.env.VITE_API_URL || "");
 const API_BASE = rawApiUrl.replace(/\/$/, "");
 
